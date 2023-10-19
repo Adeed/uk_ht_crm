@@ -1,66 +1,123 @@
 const express = require('express');
-const passport = require('passport');
-
 const db = require('../database');
-const jwtUtil = require('../utils/jwtUtil');
-
-const verifyToken = require('../middleware/verifyToken');
+const { checkSchema, validationResult } = require('express-validator');
+const { authorize } = require('../middleware/authorize');
+const { Roles } = require('../utils/roles');
 
 const router = express.Router();
-// Patients Routes
+
+// Schema validation for new and updated patient data
+const patientSchema = {
+    first_name: {
+        in: ['body'],
+        isString: true,
+        notEmpty: true,
+        errorMessage: 'First name is required'
+    },
+    last_name: {
+        in: ['body'],
+        isString: true,
+        notEmpty: true,
+        errorMessage: 'Last name is required'
+    },
+    email: {
+        in: ['body'],
+        isEmail: true,
+        optional: { options: { nullable: true } },  // makes field optional
+        errorMessage: 'Invalid email address'
+    },
+    phone: {
+        in: ['body'],
+        isString: true,
+        optional: { options: { nullable: true } },  // makes field optional
+        errorMessage: 'Phone number is required'
+    },
+    consultant_id: {
+        in: ['body'],
+        isInt: true,
+        optional: { options: { nullable: true } },  // makes field optional
+        errorMessage: 'Consultant ID should be a number'
+    },
+    treatment_id: {
+        in: ['body'],
+        isInt: true,
+        optional: { options: { nullable: true } },  // makes field optional
+        errorMessage: 'Treatment ID should be a number'
+    },
+};
+
 router.route('/patients')
-    // GET endpoint for retrieving a list of all patients
-    .get(async (req, res) => {
-        try {
-            const result = await db.query('SELECT * FROM patients');
-            res.json(result[0]);  // Assuming result[0] contains the actual query result
-        } catch (err) {
-            console.error(err);
-            res.status(500).send('Server Error');
+    .get(
+        authorize([Roles.Admin, Roles.Consultant, Roles.Doctor]),
+        async (req, res) => {
+            try {
+                const patients = await db.query('SELECT * FROM patients');
+                res.json(patients);
+            } catch (err) {
+                console.error(err);
+                res.status(500).send('Server Error');
+            }
         }
-    })
-    // POST endpoint for creating a new patient
-    .post(async (req, res) => {
-        try {
-            const result = await db.query('INSERT INTO patients SET ?', req.body);
-            res.status(201).json(result[0]);  // Assuming result[0] contains the actual query result
-        } catch (err) {
-            console.error(err);
-            res.status(500).send('Server Error');
+    )
+    .post(
+        checkSchema(patientSchema),
+        authorize([Roles.Admin, Roles.Consultant]),
+        async (req, res) => {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return res.status(400).json({ errors: errors.array() });
+            }
+            try {
+                const newPatient = await db.query('INSERT INTO patients SET ?', req.body);
+                res.status(201).json(newPatient);
+            } catch (err) {
+                console.error(err);
+                res.status(500).send('Server Error');
+            }
         }
-    });
+    );
 
 router.route('/patients/:id')
-    // GET endpoint for retrieving a specific patient by id
-    .get(async (req, res) => {
-        try {
-            const result = await db.query('SELECT * FROM patients WHERE patient_id = ?', [req.params.id]);
-            res.json(result[0]);  // Assuming result[0] contains the actual query result
-        } catch (err) {
-            console.error(err);
-            res.status(500).send('Server Error');
+    .get(
+        authorize([Roles.Admin, Roles.Consultant, Roles.Doctor]),
+        async (req, res) => {
+            try {
+                const patient = await db.query('SELECT * FROM patients WHERE patient_id = ?', [req.params.id]);
+                res.json(patient);
+            } catch (err) {
+                console.error(err);
+                res.status(500).send('Server Error');
+            }
         }
-    })
-    // PUT endpoint for updating a specific patient by id
-    .put(async (req, res) => {
-        try {
-            const result = await db.query('UPDATE patients SET ? WHERE patient_id = ?', [req.body, req.params.id]);
-            res.json(result[0]);  // Assuming result[0] contains the actual query result
-        } catch (err) {
-            console.error(err);
-            res.status(500).send('Server Error');
+    )
+    .put(
+        checkSchema(patientSchema),
+        authorize([Roles.Admin]),
+        async (req, res) => {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return res.status(400).json({ errors: errors.array() });
+            }
+            try {
+                const updatedPatient = await db.query('UPDATE patients SET ? WHERE patient_id = ?', [req.body, req.params.id]);
+                res.json(updatedPatient);
+            } catch (err) {
+                console.error(err);
+                res.status(500).send('Server Error');
+            }
         }
-    })
-    // DELETE endpoint for deleting a specific patient by id
-    .delete(async (req, res) => {
-        try {
-            const result = await db.query('DELETE FROM patients WHERE patient_id = ?', [req.params.id]);
-            res.json(result[0]);  // Assuming result[0] contains the actual query result
-        } catch (err) {
-            console.error(err);
-            res.status(500).send('Server Error');
+    )
+    .delete(
+        authorize([Roles.Admin]),
+        async (req, res) => {
+            try {
+                const deletedPatient = await db.query('DELETE FROM patients WHERE patient_id = ?', [req.params.id]);
+                res.json(deletedPatient);
+            } catch (err) {
+                console.error(err);
+                res.status(500).send('Server Error');
+            }
         }
-    });
-    
-// Exporting the router object to be used in server.js
+    );
+
 module.exports = router;

@@ -1,13 +1,23 @@
 const express = require('express');
-const db = require('../database');
-
-const patientsRoutes = require('./routes/patients');
-const usersRoutes = require('./routes/users');
-
 const router = express.Router();
 
-router.use('/patients', patientsRoutes);
-router.use('/users', usersRoutes);
-// ...and so on for other resources
+// Importing other route handlers
+const userRoutes = require('./users');
+const patientRoutes = require('./patients');
+const doctorRoutes = require('./doctors');
+const consultantRoutes = require('./consultants');
+const treatmentRoutes = require('./treatments');
+const appointmentRoutes = require('./appointments');
+const paymentRoutes = require('./payments');
 
+// Assigning route handlers to paths
+router.use('/users', userRoutes);
+router.use('/patients', patientRoutes);
+router.use('/doctors', doctorRoutes);
+router.use('/consultants', consultantRoutes);
+router.use('/treatments', treatmentRoutes);
+router.use('/appointments', appointmentRoutes);
+router.use('/payments', paymentRoutes);
+
+// Exporting the router to be used in server.js
 module.exports = router;
