@@ -1,0 +1,10 @@
+<div *ngIf="patient">
+    <h1>Edit Patient: {{ patient.firstName }} {{ patient.lastName }}</h1>
+    <form [formGroup]="patientForm" (ngSubmit)="onSubmit()">
+        <input formControlName="firstName" placeholder="First Name">
+        <input formControlName="lastName" placeholder="Last Name">
+        <input formControlName="age" placeholder="Age" type="number">
+        <!-- ... other form fields -->
+        <button type="submit">Update</button>
+    </form>
+</div>

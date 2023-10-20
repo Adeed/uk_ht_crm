@@ -1,0 +1,10 @@
+<div>
+    <h1>Create New Patient</h1>
+    <form [formGroup]="patientForm" (ngSubmit)="onSubmit()">
+        <input formControlName="firstName" placeholder="First Name">
+        <input formControlName="lastName" placeholder="Last Name">
+        <input formControlName="age" placeholder="Age" type="number">
+        <!-- ... other form fields -->
+        <button type="submit">Create</button>
+    </form>
+</div>
