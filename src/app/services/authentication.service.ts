@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
 
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 import { Credentials } from '../interfaces/credentials.interface';
 import { environment } from '../../environments/environment';
+
+import { User } from '../models/user.model';
+
 
 @Injectable({
   providedIn: 'root'
@@ -16,10 +19,10 @@ export class AuthenticationService {
 
   constructor(private http: HttpClient) { }
 
-  getCurrentUser() {
-    // Your logic to get the current user
+  getCurrentUser(): User | null {
+    return null;
   }
-  
+
   login(credentials: Credentials): Observable<any> {
     return this.http.post(`${this.apiUrl}/auth/login`, credentials);
   }

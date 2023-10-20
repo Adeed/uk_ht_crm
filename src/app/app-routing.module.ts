@@ -19,7 +19,7 @@ import { PaymentsComponent } from './pages/payments/payments.component';
 
 const routes: Routes = [
   { path: '**', redirectTo: '', pathMatch: 'full' },
-  { path: '', component: HomeComponent },
+  { path: '', component: HomeComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'dashboard', component: DashboardComponent },

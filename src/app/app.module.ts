@@ -3,15 +3,19 @@ import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatListModule } from '@angular/material/list';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HeaderComponent } from './components/layout/header/header.component';
 import { FooterComponent } from './components/layout/footer/footer.component';
 import { SidebarComponent } from './components/layout/sidebar/sidebar.component';
 import { LoginComponent } from './components/authentication/login/login.component';
 import { RegisterComponent } from './components/authentication/register/register.component';
-import { HomeComponent } from './pages/home/home.component';
+import { HomeModule } from './pages/home/home.module';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { PatientsComponent } from './pages/patients/patients.component';
 import { DoctorsComponent } from './pages/doctors/doctors.component';
@@ -22,10 +26,12 @@ import { PaymentsComponent } from './pages/payments/payments.component';
 
 
 import { AuthenticationService } from './services/authentication.service';
-import { ListComponent } from './components/patient/list/list.component';
+
+
 import { DetailComponent } from './components/patient/detail/detail.component';
 import { EditComponent } from './components/patient/edit/edit.component';
 import { CreateComponent } from './components/patient/create/create.component';
+import { ListModule } from './components/patient/list/list.module';
 
 @NgModule({
   declarations: [
@@ -35,7 +41,6 @@ import { CreateComponent } from './components/patient/create/create.component';
     SidebarComponent,
     LoginComponent,
     RegisterComponent,
-    HomeComponent,
     DashboardComponent,
     PatientsComponent,
     DoctorsComponent,
@@ -43,12 +48,15 @@ import { CreateComponent } from './components/patient/create/create.component';
     AppointmentsComponent,
     TreatmentsComponent,
     PaymentsComponent,
-    ListComponent,
     DetailComponent,
     EditComponent,
     CreateComponent
   ],
   imports: [
+    MatToolbarModule,
+    MatSidenavModule,
+    MatListModule,
+    ListModule,
     MatProgressSpinnerModule,
     ReactiveFormsModule,
     BrowserModule,

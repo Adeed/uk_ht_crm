@@ -1,6 +1,16 @@
-<aside>
-    <ul>
-        <li><a routerLink="/dashboard">Dashboard</a></li>
-        <!-- ... other sidebar links ... -->
-    </ul>
-</aside>
+<mat-sidenav-container>
+    <mat-sidenav mode="side" opened>
+        <!-- Example in Sidebar Component -->
+        <mat-nav-list>
+            <mat-list-item [routerLinkActive]="['active']" routerLink="/home">Home</mat-list-item>
+            <mat-list-item [routerLinkActive]="['active']" routerLink="/patient">Patients</mat-list-item>
+            <mat-list-item [routerLinkActive]="['active']" routerLink="/doctor">Doctors</mat-list-item>
+            <!-- ...other links -->
+        </mat-nav-list>
+
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <!-- Main content will go here -->
+        <router-outlet></router-outlet>
+    </mat-sidenav-content>
+</mat-sidenav-container>

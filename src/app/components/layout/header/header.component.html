@@ -1,8 +1,13 @@
-<header>
-  <nav>
-    <!-- Navigation items -->
-    <a routerLink="/">Home</a>
-    <a routerLink="/patients">Patients</a>
-    <!-- ... other navigation links ... -->
-  </nav>
-</header>
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
+    <!-- Example in Sidebar Component -->
+    <mat-nav-list>
+      <mat-list-item [routerLinkActive]="['active']" routerLink="/profile">User Profile</mat-list-item>
+      <mat-list-item [routerLinkActive]="['active']" routerLink="/login">Login</mat-list-item>
+      <mat-list-item [routerLinkActive]="['active']" routerLink="/register">Register</mat-list-item>
+      <!-- ...other links -->
+    </mat-nav-list>
+
+    <!-- Add more toolbar content here if needed -->
+  </mat-toolbar-row>
+</mat-toolbar>

@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 
 import { PatientService } from '../../../services/patient.service';
 import { Patient } from '../../../models/patient.model';
@@ -9,12 +8,6 @@ import { Router } from '@angular/router';
   selector: 'app-patient-list',
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.scss']
-})
-
-@NgModule({
-  imports:      [ FormsModule ],  // add FormsModule to your imports array
-  declarations: [ ListComponent ],
-  // ... other metadata
 })
 
 export class ListComponent implements OnInit {
@@ -27,7 +20,7 @@ export class ListComponent implements OnInit {
     this.loadPatients();
   }
 
-  search(): void {
+  search(term: string): void {
     this.patientService.searchPatients(this.searchTerm).subscribe(
       data => this.patients = data,
       error => console.error(error)
