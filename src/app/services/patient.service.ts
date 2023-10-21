@@ -3,9 +3,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 
-import { Observable } from 'rxjs';
-import { Patient } from '../models/patient.model';
+import { Observable, throwError } from 'rxjs';  // Updated import statement here
+import { catchError } from 'rxjs/operators';
 
+import { Patient } from '../models/patient.model';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -22,8 +23,11 @@ export class PatientService {
       params: new HttpParams().set('term', term)
     });
   }
+
   getPatients(): Observable<Patient[]> {
-    return this.http.get<Patient[]>(`${this.apiUrl}`);
+    return this.http.get<Patient[]>(`${this.apiUrl}`).pipe(
+      catchError(this.handleError)
+    );
   }
 
   getPatient(id: string): Observable<Patient> {
@@ -35,10 +39,15 @@ export class PatientService {
   }
 
   updatePatient(patient: Patient): Observable<any> {
-    return this.http.put(`${this.apiUrl}/patients/${patient.id}`, patient);
-  }  
+    return this.http.put(`${this.apiUrl}/${patient.patientId}`, patient);
+  }
 
   deletePatient(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+  
+  private handleError(error: any): Observable<never> {
+    console.error('An error occurred', error);
+    return throwError(error.message || 'Something bad happened; please try again later.');
   }
 }
