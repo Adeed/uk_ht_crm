@@ -2,10 +2,12 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import { Consultant } from '../models/consultant.model';
+import { SearchQuery } from '../models/search-query.model';
+
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -16,6 +18,20 @@ export class ConsultantService {
 
   constructor(private http: HttpClient) { }
 
+  searchConsultants(searchQuery: SearchQuery): Observable<Consultant[]> {
+    let params = new HttpParams();
+    if (searchQuery.searchTerm) {
+      params = params.append('q', searchQuery.searchTerm);
+    }
+    if (searchQuery.type) {
+      params = params.append('type', searchQuery.type);
+    }
+
+    return this.http.get<Consultant[]>(`${this.apiUrl}/search`, { params }).pipe(
+      catchError(this.handleError)
+    );
+  }
+  
   getConsultants(): Observable<Consultant[]> {
     return this.http.get<Consultant[]>(`${this.apiUrl}`).pipe(
       catchError(this.handleError)
@@ -45,7 +61,7 @@ export class ConsultantService {
       catchError(this.handleError)
     );
   }
-
+  
   private handleError(error: any): Observable<never> {
     console.error('An error occurred', error);
     return throwError(error.message || 'Something bad happened; please try again later.');

@@ -67,8 +67,8 @@ import { TreatmentsComponent } from './pages/treatments/treatments.component';
 import { PaymentsComponent } from './pages/payments/payments.component';
 
   const routes: Routes = [
-  { path: '**', redirectTo: '', pathMatch: 'full' },
-  { path: '', component: HomeComponent, canActivate: [AuthGuard] },
+  
+  { path: '', component: HomeComponent },
   { path: 'dashboard', component: DashboardComponent },
   
   // Patient routes
@@ -157,6 +157,8 @@ import { PaymentsComponent } from './pages/payments/payments.component';
   
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
+
+  { path: '**', redirectTo: '', pathMatch: 'full' },
 ];
 
 @NgModule({

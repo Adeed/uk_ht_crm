@@ -1,18 +1,18 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { HttpClientModule } from '@angular/common/http';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatListModule } from '@angular/material/list';
+import { FormsModule } from '@angular/forms';
+
+import { MaterialModule } from './material.module';
+
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
-import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { HomeModule } from './pages/home/home.module';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
 
 import { PatientsComponent } from './pages/patients/patients.component';
 import { DoctorsComponent } from './pages/doctors/doctors.component';
@@ -24,6 +24,7 @@ import { UsersComponent } from './pages/users/users.component';
 
 import { LoginComponent } from './components/authentication/login/login.component';
 import { RegisterComponent } from './components/authentication/register/register.component';
+import { SearchComponent } from './components/common/search/search.component';
 import { HeaderComponent } from './components/layout/header/header.component';
 import { SidebarComponent } from './components/layout/sidebar/sidebar.component';
 import { FooterComponent } from './components/layout/footer/footer.component';
@@ -51,6 +52,7 @@ import { AuthenticationService } from './services/authentication.service';
     UsersComponent,
     LoginComponent,
     RegisterComponent,
+    SearchComponent,
     HeaderComponent,
     SidebarComponent,
     FooterComponent
@@ -65,11 +67,9 @@ import { AuthenticationService } from './services/authentication.service';
     TreatmentModule,
     UserModule,
     HttpClientModule,
-    MatToolbarModule,
-    MatSidenavModule,
-    MatListModule,
-    MatProgressSpinnerModule,
+    MaterialModule,
     ReactiveFormsModule,
+    FormsModule,
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule

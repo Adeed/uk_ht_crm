@@ -5,6 +5,9 @@ import { DetailComponent } from './detail/detail.component';
 import { EditComponent } from './edit/edit.component';
 import { ListComponent } from './list/list.component';
 import { ConsultantService } from '../../services/consultant.service';
+import { MatTableModule } from '@angular/material/table';
+import { ReactiveFormsModule } from '@angular/forms';
+
 
 @NgModule({
   declarations: [
@@ -14,7 +17,9 @@ import { ConsultantService } from '../../services/consultant.service';
     ListComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    MatTableModule,
+    ReactiveFormsModule
   ],
   providers: [
     ConsultantService
