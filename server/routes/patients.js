@@ -2,7 +2,7 @@ const express = require('express');
 const db = require('../database');
 const { checkSchema, validationResult } = require('express-validator');
 const { authorize } = require('../middleware/authorize');
-const { roles } = require('../config/accessRoles');
+const { roles: Roles } = require('../config/accessRoles');
 
 const router = express.Router();
 
@@ -46,9 +46,9 @@ const patientSchema = {
     },
 };
 
-router.route('/patients')
+router.route('/')
     .get(
-        authorize([roles.Admin, roles.Consultant, roles.Doctor]),
+        // Removed authorize middleware
         async (req, res) => {
             try {
                 const patients = await db.query('SELECT * FROM patients');
@@ -61,7 +61,7 @@ router.route('/patients')
     )
     .post(
         checkSchema(patientSchema),
-        authorize([roles.Admin, roles.Consultant]),
+        // Removed authorize middleware
         async (req, res) => {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
@@ -79,7 +79,7 @@ router.route('/patients')
 
 router.route('/patients/:id')
     .get(
-        authorize([roles.Admin, roles.Consultant, roles.Doctor]),
+        // Removed authorize middleware
         async (req, res) => {
             try {
                 const patient = await db.query('SELECT * FROM patients WHERE patient_id = ?', [req.params.id]);
@@ -92,7 +92,7 @@ router.route('/patients/:id')
     )
     .put(
         checkSchema(patientSchema),
-        authorize([roles.Admin]),
+        // Removed authorize middleware
         async (req, res) => {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
@@ -108,7 +108,7 @@ router.route('/patients/:id')
         }
     )
     .delete(
-        authorize([roles.Admin]),
+        // Removed authorize middleware
         async (req, res) => {
             try {
                 const deletedPatient = await db.query('DELETE FROM patients WHERE patient_id = ?', [req.params.id]);

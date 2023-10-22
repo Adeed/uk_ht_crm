@@ -1,4 +1,6 @@
 const express = require('express');
+const session = require('express-session');
+
 const passport = require('passport');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -11,6 +13,14 @@ const app = express();
 app.use(cors({ origin: 'http://localhost:4200', credentials: true }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// Configure session middleware
+app.use(session({
+  secret: 'somerandomstring',  // Change 'your-secret-key'
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false }  // Set secure to true if your app is served over HTTPS
+}));
 
 // Passport middleware for authentication
 initializePassport(passport);

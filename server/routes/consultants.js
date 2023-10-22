@@ -33,7 +33,7 @@ const consultantSchema = {
 router.route('/')
     .get(async (req, res) => {
         try {
-            const consultants = await db.query('SELECT * FROM consultants');
+            const consultants = await db.query('SELECT consultant_id, first_name, last_name, email, phone FROM consultants');
             res.json(consultants);
         } catch (err) {
             console.error(err);
