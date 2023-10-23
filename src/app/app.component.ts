@@ -15,9 +15,5 @@ export class AppComponent {
 
   constructor(private sidebarService: SidebarService) {}
 
-  ngAfterViewInit(): void {
-    this.sidebarService.sidebarToggle$.subscribe(() => {
-      this.sidenav.toggle();
-    });
-  }
+  
 }

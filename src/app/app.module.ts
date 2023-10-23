@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { MaterialModule } from './material.module';
 
@@ -12,7 +13,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 import { HomeModule } from './pages/home/home.module';
-import { DashboardComponent } from './pages/dashboard/dashboard.component';
 
 import { PatientsComponent } from './pages/patients/patients.component';
 import { DoctorsComponent } from './pages/doctors/doctors.component';
@@ -22,50 +22,19 @@ import { TreatmentsComponent } from './pages/treatments/treatments.component';
 import { PaymentsComponent } from './pages/payments/payments.component';
 import { UsersComponent } from './pages/users/users.component';
 
-import { LoginComponent } from './components/authentication/login/login.component';
-import { RegisterComponent } from './components/authentication/register/register.component';
-import { SearchComponent } from './components/common/search/search.component';
-import { HeaderComponent } from './components/layout/header/header.component';
-import { SidebarComponent } from './components/layout/sidebar/sidebar.component';
-import { FooterComponent } from './components/layout/footer/footer.component';
-
-import { PatientModule } from './components/patient/patient.module';
-import { DoctorModule } from './components/doctor/doctor.module';
-import { ConsultantModule } from './components/consultant/consultant.module';
-import { AppointmentModule } from './components/appointment/appointment.module';
-import { PaymentModule } from './components/payment/payment.module';
-import { TreatmentModule } from './components/treatment/treatment.module';
-import { UserModule } from './components/user/user.module';
-
-import { AuthenticationService } from './services/authentication.service';
-
 @NgModule({
   declarations: [
     AppComponent,
-    DashboardComponent,
     PatientsComponent,
     DoctorsComponent,
     ConsultantsComponent,
     AppointmentsComponent,
     TreatmentsComponent,
     PaymentsComponent,
-    UsersComponent,
-    LoginComponent,
-    RegisterComponent,
-    SearchComponent,
-    HeaderComponent,
-    SidebarComponent,
-    FooterComponent
+    UsersComponent
   ],
   imports: [
     HomeModule,
-    PatientModule,
-    DoctorModule,
-    ConsultantModule,
-    AppointmentModule,
-    PaymentModule,
-    TreatmentModule,
-    UserModule,
     HttpClientModule,
     MaterialModule,
     ReactiveFormsModule,
@@ -74,7 +43,7 @@ import { AuthenticationService } from './services/authentication.service';
     AppRoutingModule,
     BrowserAnimationsModule
   ],
-  providers: [AuthenticationService],
+  providers: [  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
