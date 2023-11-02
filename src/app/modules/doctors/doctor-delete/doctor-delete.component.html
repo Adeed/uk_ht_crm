@@ -1,0 +1,10 @@
+<!-- src/app/modules/consultants/doctor-delete/doctor-delete.component.html -->
+
+<h2 mat-dialog-title>Delete Confirmation</h2>
+<mat-dialog-content>
+  Are you sure you want to delete Dr. {{data.doctor.first_name}} {{data.doctor.last_name}}?
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-raised-button color="warn" (click)="onDelete()">Delete</button>
+</mat-dialog-actions>

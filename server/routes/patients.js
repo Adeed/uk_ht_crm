@@ -1,8 +1,7 @@
 const express = require('express');
 const db = require('../database');
 const { checkSchema, validationResult } = require('express-validator');
-const { authorize } = require('../middleware/authorize');
-const { roles: Roles } = require('../config/accessRoles');
+const { stringify, parse } = require('flatted');  // Import methods for handling circular JSON
 
 const router = express.Router();
 
@@ -44,14 +43,66 @@ const patientSchema = {
         optional: { options: { nullable: true } },  // makes field optional
         errorMessage: 'Treatment ID should be a number'
     },
+    dob: {
+        in: ['body'],
+        isDate: true,
+        errorMessage: 'Valid date of birth is required'
+    },
+    address_line1: {
+        in: ['body'],
+        isString: true,
+        notEmpty: true,
+        errorMessage: 'Address line 1 is required'
+    },
+    city: {
+        in: ['body'],
+        isString: true,
+        notEmpty: true,
+        errorMessage: 'City is required'
+    },
+    state: {
+        in: ['body'],
+        isString: true,
+        notEmpty: true,
+        errorMessage: 'State is required'
+    },
+    postcode: {
+        in: ['body'],
+        isString: true,
+        notEmpty: true,
+        errorMessage: 'Postcode is required'
+    },
+    gp_name: {
+        in: ['body'],
+        isString: true,
+        notEmpty: true,
+        errorMessage: 'GP name is required'
+    },
+    nhs_number: {
+        in: ['body'],
+        isString: true,
+        notEmpty: true,
+        errorMessage: 'NHS number is required'
+    }
+};
+
+const wrapQuery = (query, params = []) => {
+    return new Promise((resolve, reject) => {
+        db.query(query, params, (err, results) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(results);
+            }
+        });
+    });
 };
 
 router.route('/')
     .get(
-        // Removed authorize middleware
         async (req, res) => {
             try {
-                const patients = await db.query('SELECT * FROM patients');
+                const patients = await wrapQuery('SELECT * FROM patients');
                 res.json(patients);
             } catch (err) {
                 console.error(err);
@@ -61,15 +112,14 @@ router.route('/')
     )
     .post(
         checkSchema(patientSchema),
-        // Removed authorize middleware
         async (req, res) => {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
                 return res.status(400).json({ errors: errors.array() });
             }
             try {
-                const newPatient = await db.query('INSERT INTO patients SET ?', req.body);
-                res.status(201).json(newPatient);
+                const result = await wrapQuery('INSERT INTO patients SET ?', [req.body]);
+                res.status(201).json(result);
             } catch (err) {
                 console.error(err);
                 res.status(500).send('Server Error');
@@ -79,11 +129,13 @@ router.route('/')
 
 router.route('/patients/:id')
     .get(
-        // Removed authorize middleware
         async (req, res) => {
             try {
-                const patient = await db.query('SELECT * FROM patients WHERE patient_id = ?', [req.params.id]);
-                res.json(patient);
+                const patient = await wrapQuery('SELECT * FROM patients WHERE patient_id = ?', [req.params.id]);
+                if (patient.length === 0) {
+                    return res.status(404).send('Patient not found');
+                }
+                res.json(patient[0]);
             } catch (err) {
                 console.error(err);
                 res.status(500).send('Server Error');
@@ -92,15 +144,14 @@ router.route('/patients/:id')
     )
     .put(
         checkSchema(patientSchema),
-        // Removed authorize middleware
         async (req, res) => {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
                 return res.status(400).json({ errors: errors.array() });
             }
             try {
-                const updatedPatient = await db.query('UPDATE patients SET ? WHERE patient_id = ?', [req.body, req.params.id]);
-                res.json(updatedPatient);
+                const result = await wrapQuery('UPDATE patients SET ? WHERE patient_id = ?', [req.body, req.params.id]);
+                res.json(result);
             } catch (err) {
                 console.error(err);
                 res.status(500).send('Server Error');
@@ -108,11 +159,10 @@ router.route('/patients/:id')
         }
     )
     .delete(
-        // Removed authorize middleware
         async (req, res) => {
             try {
-                const deletedPatient = await db.query('DELETE FROM patients WHERE patient_id = ?', [req.params.id]);
-                res.json(deletedPatient);
+                const result = await wrapQuery('DELETE FROM patients WHERE patient_id = ?', [req.params.id]);
+                res.json(result);
             } catch (err) {
                 console.error(err);
                 res.status(500).send('Server Error');

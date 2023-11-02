@@ -1,0 +1,11 @@
+<h2 mat-dialog-title>Appointment Details</h2>
+<mat-dialog-content>
+    <p><strong>Appointment:</strong> {{data.appointment?.appointment_date}}</p>
+  <p><strong>Consultant:</strong> {{data.consultant?.first_name}} {{data.consultant?.last_name}}</p>
+  <p><strong>Doctor:</strong> {{data.doctor?.first_name}} {{data.doctor?.last_name}}</p>
+  <p><strong>Patient:</strong> {{data.patient?.first_name}} {{data.patient?.last_name}}</p>
+  <p><strong>Treatment:</strong> {{data.treatment?.treatment_name}}</p>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Close</button>
+</mat-dialog-actions>

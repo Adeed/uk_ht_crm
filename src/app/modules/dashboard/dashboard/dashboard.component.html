@@ -1,0 +1,20 @@
+<mat-sidenav-container>
+  <mat-sidenav #sidenav mode="side" opened>
+    <app-sidenav></app-sidenav>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <!-- Listen for toggleSidenavEvent and call toggleSidenav when it's emitted -->
+    <app-header (toggleSidenavEvent)="toggleSidenav()"></app-header>
+
+    <!-- Main Content -->
+    <mat-card class="example-card">
+      <mat-card-content>
+        <router-outlet></router-outlet>
+      </mat-card-content>
+    </mat-card>
+
+  </mat-sidenav-content>
+</mat-sidenav-container>
+
+<app-footer></app-footer>

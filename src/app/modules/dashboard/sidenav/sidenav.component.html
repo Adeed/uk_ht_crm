@@ -1,0 +1,8 @@
+<!-- src/app/modules/dashboard/sidenav/sidenav.component.html -->
+
+<mat-nav-list>
+  <h1>UK HT</h1>
+  <a mat-list-item [routerLink]="['/dashboard', child.path]" *ngFor="let child of dashboardRoutes">
+    {{ child.path }}
+  </a>
+</mat-nav-list>

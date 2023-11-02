@@ -1,0 +1,53 @@
+<form [formGroup]="paymentForm" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="fill">
+        <mat-label>Patient ID</mat-label>
+        <input matInput formControlName="patientId" required>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+        <mat-label>Amount Paid</mat-label>
+        <input matInput formControlName="amountPaid" type="number" required>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+        <mat-label>Payment Date</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="paymentDate" required>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+        <mat-label>Payment Status</mat-label>
+        <mat-select formControlName="paymentStatus" required>
+            <mat-option value="Pending">Pending</mat-option>
+            <mat-option value="Completed">Completed</mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+        <mat-label>Payment Method</mat-label>
+        <mat-select formControlName="paymentMethod" required (selectionChange)="paymentMethod?.updateValueAndValidity()">
+            <mat-option value="Cash">Cash</mat-option>
+            <mat-option value="Card">Card</mat-option>
+            <mat-option value="Bank Transfer">Bank Transfer</mat-option>
+            <mat-option value="Credit">Credit</mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <!-- Only show Card Type and Last Four fields if Payment Method is "Card" -->
+    <div *ngIf="paymentForm.get('paymentMethod')?.value === 'Card'">
+        <mat-form-field appearance="fill">
+            <mat-label>Card Type</mat-label>
+            <input matInput formControlName="cardType">
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+            <mat-label>Last Four Digits</mat-label>
+            <input matInput formControlName="cardLastFour" maxlength="4">
+        </mat-form-field>
+    </div>
+
+    <button type="submit" mat-raised-button>
+        Submit
+    </button>
+</form>

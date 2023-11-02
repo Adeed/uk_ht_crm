@@ -1,0 +1,30 @@
+<!-- src/app/modules/treatments/treatment-create/treatment-create.component.html -->
+
+<h2 mat-dialog-title>
+    Add New Treatment
+  </h2>
+  
+  <mat-dialog-content>
+    <form [formGroup]="form">
+      <mat-form-field>
+        <mat-label>Treatment Name</mat-label>
+        <input matInput formControlName="treatmentName" required>
+      </mat-form-field>
+  
+      <mat-form-field>
+        <mat-label>Description</mat-label>
+        <textarea matInput formControlName="description" rows="4"></textarea>
+      </mat-form-field>
+  
+      <mat-form-field>
+        <mat-label>Cost</mat-label>
+        <input matInput formControlName="cost" type="number" step="0.01" required>
+      </mat-form-field>
+    </form>
+  </mat-dialog-content>
+  
+  <mat-dialog-actions>
+    <button mat-stroked-button color="warn" mat-button (click)="cancel()">Cancel</button>
+    <button mat-stroked-button color="primary" mat-button (click)="submit()" [disabled]="!form.valid">Add Treatment</button>
+  </mat-dialog-actions>
+  

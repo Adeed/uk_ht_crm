@@ -1,0 +1,52 @@
+<!-- patients.component.html -->
+<mat-form-field>
+    <input matInput (keyup)="applyFilter($event)" placeholder="Search">
+</mat-form-field>
+
+<button mat-raised-button color="accent" (click)="showRegistration = true">Add New Patient</button>
+
+<div *ngIf="showRegistration">
+    <button mat-raised-button color="warn" (click)="showRegistration = false">Cancel</button>
+    <app-patient-registration ></app-patient-registration>
+    
+</div>
+
+
+<mat-table [dataSource]="dataSource">
+    <!-- Define Columns -->
+    <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+        <mat-cell *matCellDef="let patient"> {{patient.first_name}} {{patient.last_name}} </mat-cell>
+    </ng-container>
+    
+    <ng-container matColumnDef="email">
+        <mat-header-cell *matHeaderCellDef> Email </mat-header-cell>
+        <mat-cell *matCellDef="let patient"> {{patient.email}} </mat-cell>
+    </ng-container>
+    
+    <ng-container matColumnDef="phone">
+        <mat-header-cell *matHeaderCellDef> Phone </mat-header-cell>
+        <mat-cell *matCellDef="let patient"> {{patient.phone}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="nhs_number">
+        <mat-header-cell *matHeaderCellDef> NHS Number </mat-header-cell>
+        <mat-cell *matCellDef="let patient"> {{patient.nhs_number}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+        <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
+        <mat-cell *matCellDef="let patient">
+            
+            <button mat-icon-button color="accent" (click)="editPatient(patient.id)">
+                <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="deletePatient(patient.id)">
+                <mat-icon>delete</mat-icon>
+            </button>
+        </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+</mat-table>

@@ -1,0 +1,12 @@
+<!-- src/app/modules/consultants/consultants/consultants.component.html -->
+
+<h1>Doctors</h1>
+
+
+<app-search-bar (searchEvent)="onSearch($event)"></app-search-bar>
+
+<nav>
+    <button mat-stroked-button color="accent" (click)="openCreateDialog()">Add New Doctor</button>
+    <app-doctor-read></app-doctor-read>
+</nav>
+<router-outlet></router-outlet>

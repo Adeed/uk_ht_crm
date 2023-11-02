@@ -33,26 +33,33 @@ const doctorSchema = {
 router.route('/')
     .get(async (req, res) => {
         try {
-            const doctors = await db.query('SELECT * FROM doctors');
-            res.json(doctors);
+            db.query('SELECT * FROM doctors', (err, results) => {
+                if (err) {
+                    console.error("Database Error:", err);
+                    return res.status(500).send('Server Error');
+                }
+                res.json(results);
+            });
         } catch (err) {
-            console.error(err);
+            console.error("Unexpected Error:", err);
             res.status(500).send('Server Error');
         }
     })
-    .post(checkSchema(doctorSchema), async (req, res) => {
+
+    .post(checkSchema(doctorSchema), (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
 
-        try {
-            const newDoctor = await db.query('INSERT INTO doctors SET ?', req.body);
-            res.status(201).json(newDoctor);
-        } catch (err) {
-            console.error(err);
-            res.status(500).send('Server Error');
-        }
+        db.query('INSERT INTO doctors SET ?', req.body, (err, results) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).send('Server Error');
+            }
+            // Send back the ID of the newly created doctor
+            res.status(201).json({ id: results.insertId });
+        });
     });
 
 router.route('/:id')
@@ -65,28 +72,32 @@ router.route('/:id')
             res.status(500).send('Server Error');
         }
     })
-    .put(checkSchema(doctorSchema), async (req, res) => {
+    
+    .put(checkSchema(doctorSchema), (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
 
-        try {
-            const updatedDoctor = await db.query('UPDATE doctors SET ? WHERE doctor_id = ?', [req.body, req.params.id]);
-            res.json(updatedDoctor);
-        } catch (err) {
-            console.error(err);
-            res.status(500).send('Server Error');
-        }
+        db.query('UPDATE doctors SET ? WHERE doctor_id = ?', [req.body, req.params.id], (err) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).send('Server Error');
+            }
+            // Send back a simple success message
+            res.json({ message: 'Doctor updated successfully' });
+        });
     })
-    .delete(async (req, res) => {
-        try {
-            const deletedDoctor = await db.query('DELETE FROM doctors WHERE doctor_id = ?', [req.params.id]);
-            res.json(deletedDoctor);
-        } catch (err) {
-            console.error(err);
-            res.status(500).send('Server Error');
-        }
+
+    .delete((req, res) => {
+        db.query('DELETE FROM doctors WHERE doctor_id = ?', [req.params.id], (err) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).send('Server Error');
+            }
+            // Send back a simple success message
+            res.json({ message: 'Doctor deleted successfully' });
+        });
     });
 
 module.exports = router;

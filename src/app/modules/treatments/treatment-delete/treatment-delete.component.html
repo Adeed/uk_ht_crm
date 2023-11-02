@@ -1,0 +1,10 @@
+<h2 mat-dialog-title>
+    Delete Treatment
+</h2>
+<mat-dialog-content>
+    Are you sure you want to delete the treatment named {{ data.treatment.treatment_name }}?
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-button (click)="deleteTreatment()">Yes, Delete</button>
+    <button mat-button mat-dialog-close>No</button>
+</mat-dialog-actions>

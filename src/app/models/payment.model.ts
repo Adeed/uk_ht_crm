@@ -1,11 +1,11 @@
 export interface Payment {
-    paymentId: number;
-    patientId: number;
-    amountPaid: number;  // Since decimal(10,2) is a fixed-point data type, we use number in TypeScript
-    paymentDate: Date;   // Timestamp type in the database maps to Date in TypeScript
-    paymentStatus: 'Pending' | 'Completed';
-    paymentMethod: 'Cash' | 'Card' | 'Bank Transfer' | 'Credit';
-    cardType?: string;   // Optional since it can be null in the database
-    cardLastFour?: string;  // Optional since it can be null in the database
-  }
-  
+  payment_id?: number;
+  patient_id?: number;
+  amount_paid: number;
+  payment_date: Date | string;
+  payment_status: 'Pending' | 'Completed';
+  payment_method: 'Cash' | 'Card' | 'Bank Transfer' | 'Credit';
+  card_type?: string;
+  card_last_four?: string;
+  is_refundable: boolean;
+}

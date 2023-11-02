@@ -1,0 +1,17 @@
+/* src/app/modules/dashboard/dashboard.component.css */
+
+:host {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  
+  mat-sidenav-container {
+    flex: 1;
+  }
+  
+  app-footer {
+    position: sticky;
+    bottom: 0;
+  }
+  

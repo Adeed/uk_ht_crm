@@ -28,13 +28,19 @@ const treatmentSchema = {
 router.route('/')
     .get(async (req, res) => {
         try {
-            const treatments = await db.query('SELECT * FROM treatments');
-            res.json(treatments);
+            db.query('SELECT * FROM treatments', (err, results) => {
+                if (err) {
+                    console.error("Database Error:", err);
+                    return res.status(500).send('Server Error');
+                }
+                res.json(results);
+            });
         } catch (err) {
-            console.error(err);
+            console.error("Unexpected Error:", err);
             res.status(500).send('Server Error');
         }
     })
+
     .post(checkSchema(treatmentSchema), async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -42,8 +48,13 @@ router.route('/')
         }
 
         try {
-            const newTreatment = await db.query('INSERT INTO treatments SET ?', req.body);
-            res.status(201).json(newTreatment);
+            db.query('INSERT INTO treatments SET ?', req.body, (err, results) => {
+                if (err) {
+                    console.error(err);
+                    return res.status(500).send('Server Error');
+                }
+                res.status(201).json(results);
+            });
         } catch (err) {
             console.error(err);
             res.status(500).send('Server Error');
@@ -53,31 +64,53 @@ router.route('/')
 router.route('/:id')
     .get(async (req, res) => {
         try {
-            const treatment = await db.query('SELECT * FROM treatments WHERE treatment_id = ?', [req.params.id]);
-            res.json(treatment);
+            db.query('SELECT * FROM treatments WHERE treatment_id = ?', [req.params.id], (err, results) => {
+                if (err) {
+                    console.error(err);
+                    return res.status(500).send('Server Error');
+                }
+                res.json(results);
+            });
         } catch (err) {
             console.error(err);
             res.status(500).send('Server Error');
         }
     })
+
     .put(checkSchema(treatmentSchema), async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
 
+        console.log('Update Treatment Data:', req.body); // Log the incoming data
+        console.log('Treatment ID to be updated:', req.params.id); // Log the treatment ID
+
         try {
-            const updatedTreatment = await db.query('UPDATE treatments SET ? WHERE treatment_id = ?', [req.body, req.params.id]);
-            res.json(updatedTreatment);
+            db.query('UPDATE treatments SET ? WHERE treatment_id = ?', [req.body, req.params.id], (err, results) => {
+                if (err) {
+                    console.error('Database Error during Treatment Update:', err); // Log any database error
+                    return res.status(500).send('Server Error');
+                }
+                res.json(results);
+            });
         } catch (err) {
             console.error(err);
             res.status(500).send('Server Error');
         }
     })
+
     .delete(async (req, res) => {
+        console.log('Treatment ID to be deleted:', req.params.id); // Log the treatment ID to be deleted
+
         try {
-            const deletedTreatment = await db.query('DELETE FROM treatments WHERE treatment_id = ?', [req.params.id]);
-            res.json(deletedTreatment);
+            db.query('DELETE FROM treatments WHERE treatment_id = ?', [req.params.id], (err, results) => {
+                if (err) {
+                    console.error('Database Error during Treatment Deletion:', err); // Log any database error
+                    return res.status(500).send('Server Error');
+                }
+                res.json(results);
+            });
         } catch (err) {
             console.error(err);
             res.status(500).send('Server Error');

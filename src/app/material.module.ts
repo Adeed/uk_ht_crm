@@ -17,15 +17,17 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
-
+import { MatCardModule } from '@angular/material/card';
+import { MatTabsModule } from '@angular/material/tabs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 const MaterialComponents = [
   MatProgressSpinnerModule,MatToolbarModule,MatDatepickerModule,MatTableModule,
     MatButtonModule,MatSelectModule,MatPaginatorModule,MatSidenavModule,
-    MatIconModule,MatNativeDateModule,MatSortModule,MatListModule,
-    MatFormFieldModule,MatInputModule,MatDialogModule,
-    MatSnackBarModule,MatCheckboxModule,MatMenuModule
+    MatIconModule,MatNativeDateModule,MatSortModule,MatListModule,MatProgressSpinnerModule,
+    MatFormFieldModule,MatInputModule,MatDialogModule,MatCardModule,MatExpansionModule,
+    MatSnackBarModule,MatCheckboxModule,MatMenuModule,MatTabsModule,
     // ...other modules
 ];
 

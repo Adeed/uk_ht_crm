@@ -1,6 +1,5 @@
 // app.component.ts
 import { Component, ViewChild } from '@angular/core';
-import { SidebarService } from './services/sidebar.service';
 import { MatSidenav } from '@angular/material/sidenav';
 
 @Component({
@@ -13,7 +12,7 @@ export class AppComponent {
 
   title = 'crm_app';
 
-  constructor(private sidebarService: SidebarService) {}
+  constructor() {}
 
   
 }

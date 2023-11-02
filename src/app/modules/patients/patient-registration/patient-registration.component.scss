@@ -1,0 +1,27 @@
+.form-row {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.form-field {
+    margin: 10px;
+}
+
+.navigation-buttons {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+app-patient-registration {
+    width: 100%;
+    height: 100%;
+}
+mat-tab-group {
+    height: auto;
+}
+
+.mat-tab-content {
+    height: auto !important;
+}

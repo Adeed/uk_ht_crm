@@ -1,0 +1,16 @@
+<!-- src/app/modules/consultants/consultants/consultants.component.html -->
+
+<h1>Consultants</h1>
+
+
+<app-search-bar (searchEvent)="onSearch($event)"></app-search-bar>
+
+<nav>
+    <button mat-raised-button color="accent" (click)="openCreateTreatmentDialog()">Add Treatment</button>
+    <app-treatment-read></app-treatment-read>
+</nav>
+<router-outlet></router-outlet>
+
+
+
+

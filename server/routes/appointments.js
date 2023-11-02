@@ -33,7 +33,15 @@ const appointmentSchema = {
         in: ['body'],
         isISO8601: true,
         notEmpty: true,
-        errorMessage: 'Appointment date is required'
+        errorMessage: 'Appointment datetime is required'
+    },
+    appointment_time: {
+        in: ['body'],
+        matches: {
+            options: [/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/], // HH:mm format validation
+        },
+        notEmpty: true,
+        errorMessage: 'Appointment time is required and should be in HH:mm format'
     },
     appointment_status: {
         in: ['body'],
@@ -43,32 +51,49 @@ const appointmentSchema = {
         notEmpty: true,
         errorMessage: 'Appointment status is required'
     },
+    appointment_notes: {
+        in: ['body'],
+        optional: { options: { nullable: true } },
+        errorMessage: 'Appointment Notes should be string'
+    },
+    room_id: {
+        in: ['body'],
+        notEmpty: true,
+        errorMessage: 'Room ID Error'
+    }
 };
 
-router.route('/')
-    .get(async (req, res) => {
-        try {
-            const appointments = await db.query('SELECT * FROM appointments');
-            res.json(appointments);
-        } catch (err) {
-            console.error(err);
-            res.status(500).send('Server Error');
+router.get('/', (req, res) => {
+    db.query('SELECT * FROM appointments', (error, results) => {
+        if (error) {
+            console.error("Database error:", error);
+            return res.status(500).send('Server Error');
         }
-    })
+        res.json(results);
+    });
+});
+
+
+router.route('/')
     .post(checkSchema(appointmentSchema), async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
+            console.log(req.body);
+
             return res.status(400).json({ errors: errors.array() });
         }
 
         try {
-            const newAppointment = await db.query('INSERT INTO appointments SET ?', req.body);
-            res.status(201).json(newAppointment);
+            await db.query('INSERT INTO appointments SET ?', req.body);
+            res.status(201).json({ message: "Appointment created successfully!" });
         } catch (err) {
+            console.log(req.body);
+
             console.error(err);
             res.status(500).send('Server Error');
         }
     });
+
 
 router.route('/:id')
     .get(async (req, res) => {

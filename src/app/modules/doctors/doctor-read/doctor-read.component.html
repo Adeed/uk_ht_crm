@@ -1,0 +1,46 @@
+<!-- src/app/modules/consultants/consultant-read/consultant-read.component.html -->
+
+<mat-table [dataSource]="doctors">
+
+    <!-- First Name Column -->
+    <ng-container matColumnDef="first_name">
+      <mat-header-cell *matHeaderCellDef> First Name </mat-header-cell>
+      <mat-cell *matCellDef="let doctor"> {{doctor.first_name}} </mat-cell>
+    </ng-container>
+  
+    <!-- Last Name Column -->
+    <ng-container matColumnDef="last_name">
+      <mat-header-cell *matHeaderCellDef> Last Name </mat-header-cell>
+      <mat-cell *matCellDef="let doctor"> {{doctor.last_name}} </mat-cell>
+    </ng-container>
+  
+    <!-- Email Column -->
+    <ng-container matColumnDef="email">
+      <mat-header-cell *matHeaderCellDef> Email </mat-header-cell>
+      <mat-cell *matCellDef="let doctor"> {{doctor.email}} </mat-cell>
+    </ng-container>
+  
+    <!-- Phone Column -->
+    <ng-container matColumnDef="phone">
+      <mat-header-cell *matHeaderCellDef> Phone </mat-header-cell>
+      <mat-cell *matCellDef="let doctor"> {{doctor.phone}} </mat-cell>
+    </ng-container>
+  
+    <ng-container matColumnDef="actions">
+      <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
+      <mat-cell *matCellDef="let doctor">
+          <button mat-icon-button (click)="openEditDialog(doctor)">
+              <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button (click)="openDeleteDialog(doctor)">
+              <mat-icon>delete</mat-icon>
+          </button>
+      </mat-cell>
+  </ng-container>
+
+    <!-- Define the row elements and which columns to display -->
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  
+  </mat-table>
+  

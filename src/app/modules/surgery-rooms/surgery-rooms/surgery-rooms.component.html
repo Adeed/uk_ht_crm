@@ -1,0 +1,15 @@
+<div class="add-room-container">
+    <input [(ngModel)]="newRoomName" placeholder="Enter new room name">
+    <button (click)="addNewRoom()">Add Room</button>
+</div>
+
+<div *ngFor="let room of rooms">
+    <h3>{{ room.room_name }}</h3>
+    <p>Blocked Dates: {{ blockedDates[room.room_id].join(', ') || 'None' }}</p>
+    <button (click)="blockRoom(room.room_id, selectedDate)">Block for {{ selectedDate | date }}</button>
+    <button (click)="unblockRoom(room.room_id, selectedDate)">Unblock for {{ selectedDate | date }}</button>
+    <button (click)="deleteRoom(room.room_id)">Delete Room</button>
+    <button (click)="toggleAvailability(room.room_id, room.is_available)">
+        {{ room.is_available ? 'Mark as Unavailable' : 'Mark as Available' }}
+    </button>
+</div>

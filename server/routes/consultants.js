@@ -33,10 +33,15 @@ const consultantSchema = {
 router.route('/')
     .get(async (req, res) => {
         try {
-            const consultants = await db.query('SELECT consultant_id, first_name, last_name, email, phone FROM consultants');
-            res.json(consultants);
+            db.query('SELECT consultant_id, first_name, last_name, email, phone FROM consultants', (err, results) => {
+                if (err) {
+                    console.error("Database Error:", err);
+                    return res.status(500).send('Server Error');
+                }
+                res.json(results);
+            });
         } catch (err) {
-            console.error(err);
+            console.error("Unexpected Error:", err);
             res.status(500).send('Server Error');
         }
     })
@@ -47,10 +52,15 @@ router.route('/')
         }
 
         try {
-            const newConsultant = await db.query('INSERT INTO consultants SET ?', req.body);
-            res.status(201).json(newConsultant);
+            db.query('INSERT INTO consultants SET ?', req.body, (err, results) => {
+                if (err) {
+                    console.error("Database Error:", err);
+                    return res.status(500).send('Server Error');
+                }
+                res.status(201).json({ insertId: results.insertId });
+            });
         } catch (err) {
-            console.error(err);
+            console.error("Unexpected Error:", err);
             res.status(500).send('Server Error');
         }
     });
@@ -58,10 +68,15 @@ router.route('/')
 router.route('/:id')
     .get(async (req, res) => {
         try {
-            const consultant = await db.query('SELECT * FROM consultants WHERE consultant_id = ?', [req.params.id]);
-            res.json(consultant);
+            db.query('SELECT * FROM consultants WHERE consultant_id = ?', [req.params.id], (err, results) => {
+                if (err) {
+                    console.error("Database Error:", err);
+                    return res.status(500).send('Server Error');
+                }
+                res.json(results[0]);
+            });
         } catch (err) {
-            console.error(err);
+            console.error("Unexpected Error:", err);
             res.status(500).send('Server Error');
         }
     })
@@ -72,19 +87,29 @@ router.route('/:id')
         }
 
         try {
-            const updatedConsultant = await db.query('UPDATE consultants SET ? WHERE consultant_id = ?', [req.body, req.params.id]);
-            res.json(updatedConsultant);
+            db.query('UPDATE consultants SET ? WHERE consultant_id = ?', [req.body, req.params.id], (err, results) => {
+                if (err) {
+                    console.error("Database Error:", err);
+                    return res.status(500).send('Server Error');
+                }
+                res.json({ affectedRows: results.affectedRows });
+            });
         } catch (err) {
-            console.error(err);
+            console.error("Unexpected Error:", err);
             res.status(500).send('Server Error');
         }
     })
     .delete(async (req, res) => {
         try {
-            const deletedConsultant = await db.query('DELETE FROM consultants WHERE consultant_id = ?', [req.params.id]);
-            res.json(deletedConsultant);
+            db.query('DELETE FROM consultants WHERE consultant_id = ?', [req.params.id], (err, results) => {
+                if (err) {
+                    console.error("Database Error:", err);
+                    return res.status(500).send('Server Error');
+                }
+                res.json({ affectedRows: results.affectedRows });
+            });
         } catch (err) {
-            console.error(err);
+            console.error("Unexpected Error:", err);
             res.status(500).send('Server Error');
         }
     });
