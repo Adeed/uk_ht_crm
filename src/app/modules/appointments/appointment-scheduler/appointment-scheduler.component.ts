@@ -13,6 +13,8 @@ import { TreatmentService } from '../../treatments/treatment.service';
 import { PatientService } from '../../patients/patient.service';
 import { AppointmentService } from '../appointment.service';
 
+import { PatientTreatment } from '../../../models/patient_treatment.model';
+import { Appointment } from '../../../models/appointment.model';
 import { AppointmentDetailDialogComponent } from '../appointment-detail-dialog/appointment-detail-dialog.component';
 import { AppointmentCreationDialogComponent } from '../appointment-creation-dialog/appointment-creation-dialog.component';
 
@@ -27,10 +29,11 @@ export class AppointmentSchedulerComponent implements OnInit {
 
   rooms: any[] = [];
 
-  appointments: any[] = [];
+  appointments: Appointment[] = [];
   consultants: any[] = [];
   doctors: any[] = [];
   patients: any[] = [];
+  patientTreatments: PatientTreatment[] = [];
   treatments: any[] = [];
   calendarEvents: any[] = [];
   eventsModel: any[] = [];
@@ -48,32 +51,42 @@ export class AppointmentSchedulerComponent implements OnInit {
     this.loadInitialData();
     this.initCalendarOptions();
 
- 
+
   }
 
   private loadInitialData(): void {
     forkJoin({
       consultants: this.consultantService.getConsultants(),
       doctors: this.doctorService.getDoctors(),
-      treatments: this.treatmentService.getTreatments(),
       patients: this.patientService.getPatients(),
       appointments: this.appointmentService.getAppointments(),
-      rooms: this.appointmentService.getSurgeryRooms()
+      rooms: this.appointmentService.getSurgeryRooms(),
+      allPatientTreatments: this.patientService.getAllPatientTreatments()
     }).subscribe(result => {
       this.consultants = result.consultants;
       this.doctors = result.doctors;
-      this.treatments = result.treatments;
       this.patients = result.patients;
       this.appointments = result.appointments;
       this.rooms = result.rooms;
-      console.log("Appointments:", result);
+
+      this.patientTreatments = result.allPatientTreatments.map(pt => {
+        const treatmentsArray = pt.treatments.split('|');
+        return {
+          patient_treatment_id: parseInt(treatmentsArray[0]),
+          patient_id: pt.patient_id,
+          treatment_name: treatmentsArray[1],
+          no_of_grafts: parseInt(treatmentsArray[2]),
+          area_of_transplant: treatmentsArray[3],
+          sessions_agreed: parseInt(treatmentsArray[4]),
+          final_cost: parseFloat(treatmentsArray[5])
+        };
+      });
+
       this.updateCalendarEvents();
-      
-      // Initialize calendarOptions after fetching the data
       this.initCalendarOptions();
     });
   }
- 
+
 
   private initCalendarOptions(): void {
     this.calendarOptions = {
@@ -100,7 +113,7 @@ export class AppointmentSchedulerComponent implements OnInit {
         right: 'dayGridMonth,timeGridWeek,listMonth'
       },
       events: this.calendarEvents,  // Assign the events here
-      editable:false,
+      editable: false,
       dateClick: this.handleDateClick.bind(this),
       eventDrop: this.handleEventDrop.bind(this),
       eventResize: this.handleEventResize.bind(this),
@@ -111,14 +124,22 @@ export class AppointmentSchedulerComponent implements OnInit {
 
   }
   private updateCalendarEvents(): void {
-    if (this.appointments && this.consultants && this.doctors && this.treatments && this.patients) {
+    if (this.appointments && this.consultants && this.doctors && this.patientTreatments && this.patients) {
       this.calendarEvents = this.appointments.map(appointment => {
         const startDate = new Date(appointment.appointment_date);
         startDate.setHours(parseInt(appointment.appointment_time.split(':')[0]), parseInt(appointment.appointment_time.split(':')[1]));
 
         const patient = this.patients.find(p => p.patient_id === appointment.patient_id);
-        const treatment = this.treatments.find(t => t.treatment_id === appointment.treatment_id);
-        const title = `${patient?.first_name} ${patient?.last_name}| Treatment| ${treatment?.treatment_name}| Description| ${treatment?.description}`;
+        const treatment = this.patientTreatments.find(t => t.patient_treatment_id === appointment.patient_treatment_id);
+        const title = `${patient?.first_name} ${patient?.last_name} 
+                      | Ethnicity: ${patient.ethnicity} 
+                      | City From: ${patient.city} 
+                      | Treatment:${treatment?.treatment_name}
+                      | Area Of Transplant: ${treatment?.area_of_transplant}
+                      | No Of Grafts: ${treatment?.no_of_grafts}
+                      | Agreed Sessions: ${treatment?.sessions_agreed}
+                      | Agreed Price: ${treatment?.final_cost}
+                      | Notes: ${appointment.appointment_notes}`;
 
         let backgroundColor = 'blue';  // default color
         if (treatment?.treatment_name === 'PRP') {
@@ -132,9 +153,9 @@ export class AppointmentSchedulerComponent implements OnInit {
           title: title,
           start: startDate.toISOString(),
           allDay: false,
-          backgroundColor: backgroundColor,  
+          backgroundColor: backgroundColor,
           extendedProps: {
-              appointment
+            appointment
           }
         };
         return event;
@@ -144,7 +165,7 @@ export class AppointmentSchedulerComponent implements OnInit {
 
   handleDateClick(arg: any) {
     const dialogRef = this.dialog.open(AppointmentCreationDialogComponent, {
-      data: { date: arg.dateStr }
+      data: { date: arg.dateStr, rooms: this.rooms }
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -158,7 +179,6 @@ export class AppointmentSchedulerComponent implements OnInit {
       }
     });
   }
-
 
   handleEventDrop(arg: any) {
     alert('Appointment dropped on: ' + arg.dateStr);

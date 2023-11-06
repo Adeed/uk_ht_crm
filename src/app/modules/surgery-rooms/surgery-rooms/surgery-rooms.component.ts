@@ -10,13 +10,12 @@ export class SurgeryRoomsComponent implements OnInit {
 
   rooms: any[] = [];
   blockedDates: { [roomId: number]: Date[] } = {};
-  selectedDate: Date = new Date(); // Default to today, but you can set this to null or another date if needed
+  selectedDate: Date = new Date();
+  selectedRoom: number | null = null;  // Define selectedRoom property
 
   newRoomName: string = '';
 
-  constructor(
-    private surgeryRoomsService: SurgeryRoomsService
-  ) { }
+  constructor(private surgeryRoomsService: SurgeryRoomsService) { }
 
   ngOnInit(): void {
     this.loadRooms();
@@ -24,24 +23,24 @@ export class SurgeryRoomsComponent implements OnInit {
 
   addNewRoom() {
     if (this.newRoomName) {
-        // Call service method to add a new room
-        // After successful addition, refresh the rooms list
+      this.surgeryRoomsService.addNewRoom(this.newRoomName).subscribe(() => {
+        this.loadRooms();
+      });
     }
-}
+  }
 
-deleteRoom(roomId: number) {
-    // Call service method to delete the room by its ID
-    // After successful deletion, refresh the rooms list
-}
+  deleteRoom(roomId: number) {
+    this.surgeryRoomsService.deleteRoom(roomId).subscribe(() => {
+      this.loadRooms();
+    });
+  }
 
-toggleAvailability(roomId: number, isAvailable: boolean) {
-    if (isAvailable) {
-        // Call service method to mark room as unavailable
-    } else {
-        // Call service method to mark room as available
-    }
-    // After successful toggle, refresh the rooms list
-}
+  toggleAvailability(roomId: number, isAvailable: boolean) {
+    const newState = !isAvailable; // Toggle the state
+    this.surgeryRoomsService.updateRoomAvailability(roomId, newState).subscribe(() => {
+      this.loadRooms();
+    });
+  }
 
   loadRooms() {
     this.surgeryRoomsService.getSurgeryRooms().subscribe(rooms => {
@@ -57,7 +56,7 @@ toggleAvailability(roomId: number, isAvailable: boolean) {
   }
 
   blockRoom(roomId: number, date: Date | Date[]) {
-    let datesToBlock = Array.isArray(date) ? date : [date]; // If it's a single date, convert it to an array
+    let datesToBlock = Array.isArray(date) ? date : [date];
     this.surgeryRoomsService.blockRoomForDates(roomId, datesToBlock).subscribe(() => {
       this.loadBlockedDatesForRoom(roomId);
     });

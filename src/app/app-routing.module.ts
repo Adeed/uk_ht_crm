@@ -14,7 +14,7 @@ const routes: Routes = [
       { path: 'treatments', loadChildren: () => import('./modules/treatments/treatments.module').then(m => m.TreatmentsModule) },
       { path: 'payments', loadChildren: () => import('./modules/payments/payments.module').then(m => m.PaymentsModule) },
       { path: 'users', loadChildren: () => import('./modules/users/users.module').then(m => m.UsersModule) },
-      { path: 'Surgery Rooms', loadChildren: () => import('./modules/surgery-rooms/surgery-rooms.module').then(m => m.DefaultSlotsModule) },
+      { path: 'surgery-rooms', loadChildren: () => import('./modules/surgery-rooms/surgery-rooms.module').then(m => m.DefaultSlotsModule) },
 
     ]
   },

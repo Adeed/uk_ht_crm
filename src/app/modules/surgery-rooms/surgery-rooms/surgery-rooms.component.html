@@ -1,15 +1,65 @@
+<!-- Add new room container -->
 <div class="add-room-container">
-    <input [(ngModel)]="newRoomName" placeholder="Enter new room name">
-    <button (click)="addNewRoom()">Add Room</button>
+    <mat-form-field appearance="outline">
+        <mat-label>Enter new room name</mat-label>
+        <input matInput [(ngModel)]="newRoomName">
+    </mat-form-field>
+    <button mat-raised-button color="primary" (click)="addNewRoom()">Add Room</button>
 </div>
 
-<div *ngFor="let room of rooms">
-    <h3>{{ room.room_name }}</h3>
-    <p>Blocked Dates: {{ blockedDates[room.room_id].join(', ') || 'None' }}</p>
-    <button (click)="blockRoom(room.room_id, selectedDate)">Block for {{ selectedDate | date }}</button>
-    <button (click)="unblockRoom(room.room_id, selectedDate)">Unblock for {{ selectedDate | date }}</button>
-    <button (click)="deleteRoom(room.room_id)">Delete Room</button>
-    <button (click)="toggleAvailability(room.room_id, room.is_available)">
-        {{ room.is_available ? 'Mark as Unavailable' : 'Mark as Available' }}
-    </button>
+<!-- Table/List of rooms -->
+<mat-table [dataSource]="rooms">
+
+    <!-- Room Name Column -->
+    <ng-container matColumnDef="roomName">
+        <mat-header-cell *matHeaderCellDef> Room Name </mat-header-cell>
+        <mat-cell *matCellDef="let room"> {{room.room_name}} </mat-cell>
+    </ng-container>
+
+    <!-- Availability Column -->
+    <ng-container matColumnDef="availability">
+        <mat-header-cell *matHeaderCellDef> Available </mat-header-cell>
+        <mat-cell *matCellDef="let room"> {{room.is_available ? 'Yes' : 'No'}} </mat-cell>
+    </ng-container>
+
+    <!-- Blocked Dates Column -->
+    <ng-container matColumnDef="blockedDates">
+        <mat-header-cell *matHeaderCellDef> Blocked Dates </mat-header-cell>
+        <mat-cell *matCellDef="let room"> {{(blockedDates[room.room_id] || []).join(', ') || 'None'}} </mat-cell>
+    </ng-container>
+
+    <!-- Actions Column -->
+    <ng-container matColumnDef="actions">
+        <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
+        <mat-cell *matCellDef="let room">
+            <button mat-button (click)="toggleAvailability(room.room_id, room.is_available)">
+                {{room.is_available ? 'Mark Unavailable' : 'Mark Available'}}
+            </button>
+            <!-- <button mat-button color="warn" (click)="deleteRoom(room.room_id)">Delete</button>-->
+        </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="['roomName', 'availability', 'blockedDates', 'actions']"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: ['roomName', 'availability', 'blockedDates', 'actions']"></mat-row>
+</mat-table>
+
+<!-- Block/Unblock Rooms -->
+<div class="block-room-container">
+    <mat-form-field appearance="outline">
+        <mat-label>Select Room</mat-label>
+        <mat-select [(ngModel)]="selectedRoom">
+            <mat-option *ngFor="let room of rooms" [value]="room.room_id">{{room.room_name}}</mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+        <mat-label>Select Date</mat-label>
+        <input matInput [matDatepicker]="picker" [(ngModel)]="selectedDate">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+    <button mat-raised-button color="accent" [disabled]="selectedRoom === null" (click)="blockRoom(selectedRoom!, selectedDate)">Block Room</button>
+<button mat-raised-button color="warn" [disabled]="selectedRoom === null" (click)="unblockRoom(selectedRoom!, selectedDate)">Unblock Room</button>
+
 </div>

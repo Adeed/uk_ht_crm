@@ -24,8 +24,7 @@ export class TreatmentUpdateComponent implements OnInit {
   ngOnInit(): void {
     this.form = this.fb.group({
       treatmentName: [this.data.treatment.treatment_name, Validators.required],
-      description: [this.data.treatment.description],
-      cost: [this.data.treatment.cost, [Validators.required, Validators.pattern(/^\d+(\.\d{1,2})?$/)]]
+      description: [this.data.treatment.description]
     });
   }
 

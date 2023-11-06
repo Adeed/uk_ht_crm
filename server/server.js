@@ -8,7 +8,7 @@ const app = express();
 app.use(cors({ origin: 'http://localhost:4200', credentials: true }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
+app.use(express.json());
 // Importing routes
 const apiRoutes = require('./routes/api');
 app.use('/api', apiRoutes);

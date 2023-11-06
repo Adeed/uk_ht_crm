@@ -10,6 +10,8 @@ const treatmentRoutes = require('./treatments');
 const appointmentRoutes = require('./appointments');
 const paymentRoutes = require('./payments');
 const surgeryRoomsRoutes  = require('./surgery-rooms');
+const patientTreatmentsRoutes  = require('./patient-treatments');
+
 
 // Assigning route handlers to paths
 router.use('/users', userRoutes);
@@ -20,6 +22,7 @@ router.use('/treatments', treatmentRoutes);
 router.use('/appointments', appointmentRoutes);
 router.use('/payments', paymentRoutes);
 router.use('/surgery-rooms', surgeryRoomsRoutes);
+router.use('/patient-treatments', patientTreatmentsRoutes);
 
 // Exporting the router to be used in server.js
 module.exports = router;

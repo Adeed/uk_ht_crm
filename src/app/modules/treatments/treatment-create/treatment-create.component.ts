@@ -35,8 +35,7 @@ export class TreatmentCreateComponent {
       const treatmentData: Treatment = {
         treatment_id: 0,  // This will be replaced by the backend
         treatment_name: this.form.value.treatmentName,
-        description: this.form.value.description,
-        cost: this.form.value.cost
+        description: this.form.value.description
       };
       // Adjust the payload
       const payload = {

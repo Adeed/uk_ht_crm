@@ -14,42 +14,37 @@ router.get('/', (req, res) => {
     });
 });
 
-// Add a new surgery room
+// Add a new surgery room with validation
 router.post('/', (req, res) => {
-    db.query('INSERT INTO surgery_rooms SET ?', req.body, (error, results) => {
-        if (error) {
-            console.error("Database error:", error);
-            return res.status(500).send('Server Error');
+    const roomName = req.body.name;
+    // Check if the room name already exists
+    db.query('SELECT * FROM surgery_rooms WHERE name = ?', [roomName], (error, results) => {
+        if (results.length > 0) {
+            return res.status(400).json({ message: "Room name already exists." });
         }
-        res.status(201).json(results);
+
+        db.query('INSERT INTO surgery_rooms SET ?', req.body, (error, results) => {
+            if (error) {
+                console.error("Database error:", error);
+                return res.status(500).send('Server Error');
+            }
+            res.status(201).json(results);
+        });
     });
 });
 
-// Update a surgery room by ID
+// Update a surgery room by ID with validation
 router.put('/:id', (req, res) => {
-    db.query('UPDATE surgery_rooms SET ? WHERE room_id = ?', [req.body, req.params.id], (error, results) => {
-        if (error) {
-            console.error("Database error:", error);
-            return res.status(500).send('Server Error');
-        }
-        res.json(results);
-    });
-});
+    const roomId = req.params.id;
 
-// Mark a surgery room as unavailable
-router.put('/mark-unavailable/:id', (req, res) => {
-    db.query('UPDATE surgery_rooms SET is_available = false WHERE room_id = ?', [req.params.id], (error, results) => {
-        if (error) {
-            console.error("Database error:", error);
-            return res.status(500).send('Server Error');
+    if (req.body.is_available !== undefined) {
+        // Validate 'is_available'
+        if (typeof req.body.is_available !== 'boolean') {
+            return res.status(400).json({ message: "Invalid availability status." });
         }
-        res.json(results);
-    });
-});
+    }
 
-// Mark a surgery room as available
-router.put('/mark-available/:id', (req, res) => {
-    db.query('UPDATE surgery_rooms SET is_available = true WHERE room_id = ?', [req.params.id], (error, results) => {
+    db.query('UPDATE surgery_rooms SET ? WHERE room_id = ?', [req.body, roomId], (error, results) => {
         if (error) {
             console.error("Database error:", error);
             return res.status(500).send('Server Error');
@@ -72,6 +67,12 @@ router.delete('/:id', (req, res) => {
 router.post('/:id/block', (req, res) => {
     const roomId = req.params.id;
     const { dates } = req.body; // Assume 'dates' is an array of dates to block
+
+    // Validation: Ensure the dates are in the future
+    const currentDate = new Date().toISOString().split('T')[0];
+    if (dates.some(date => date < currentDate)) {
+        return res.status(400).json({ message: "Invalid date. Can't block past dates." });
+    }
 
     const values = dates.map(date => [roomId, date]);
 
@@ -96,6 +97,18 @@ router.get('/:id/blocked-dates', (req, res) => {
     });
 });
 
+// Unblock a specific date for a room
+router.delete('/:id/unblock/:date', (req, res) => {
+    const roomId = req.params.id;
+    const dateToUnblock = req.params.date;
+    db.query('DELETE FROM room_blocked_dates WHERE room_id = ? AND blocked_date = ?', [roomId, dateToUnblock], (error, results) => {
+        if (error) {
+            console.error("Database error:", error);
+            return res.status(500).send('Server Error');
+        }
+        res.json(results);
+    });
+});
 
 
 module.exports = router;

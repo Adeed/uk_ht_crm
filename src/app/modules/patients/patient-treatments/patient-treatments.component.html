@@ -1,0 +1,31 @@
+<!-- patient-treatments.component.html -->
+
+<!-- Form to add treatments -->
+<form [formGroup]="treatmentForm">
+
+  <!-- Treatment Dropdown -->
+  <mat-form-field>
+    <mat-select placeholder="Select Treatment" formControlName="treatment_name">
+      <mat-option *ngFor="let treatment of availableTreatments" [value]="treatment.treatment_name">
+        {{treatment.treatment_name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <!-- No of Grafts -->
+  <mat-form-field>
+    <input matInput type="number" placeholder="No of Grafts" formControlName="no_of_grafts">
+  </mat-form-field>
+
+  <!-- Area of Transplant -->
+  <mat-form-field>
+    <input matInput type="text" placeholder="Area of Transplant" formControlName="area_of_transplant">
+  </mat-form-field>
+
+  <!-- Sessions Agreed -->
+  <mat-form-field>
+    <input matInput type="number" placeholder="Sessions Agreed" formControlName="sessions_agreed">
+  </mat-form-field>
+
+  <button mat-raised-button (click)="addTreatment()">Add Treatment</button>
+</form>

@@ -12,14 +12,21 @@
             <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
 
-        <!-- Time Slot Selector -->
+        <!-- Appointment Slot Selector -->
         <mat-form-field appearance="fill">
             <mat-label>Available Room</mat-label>
-            <mat-select formControlName="appointment_time">
-                <mat-option *ngFor="let slot of availableSlotsForDay" [value]="slot">{{ slot }}</mat-option>
+            <mat-select formControlName="room_id">
+                <mat-option *ngFor="let room of availableRoomsForDay" [value]="room.room_id">
+                    {{ room.room_name}}
+                </mat-option>
             </mat-select>
         </mat-form-field>
 
+        <!-- Appointment Notes -->
+        <mat-form-field appearance="fill" class="full-width">
+            <mat-label>Appointment Notes</mat-label>
+            <textarea matInput formControlName="appointment_notes" rows="3"></textarea>
+        </mat-form-field>
 
         <!-- Consultant Selector -->
         <mat-form-field appearance="fill">
@@ -35,28 +42,36 @@
         <mat-form-field appearance="fill">
             <mat-label>Doctor</mat-label>
             <mat-select formControlName="doctor_id">
-                <mat-option *ngFor="let doctor of doctors" [value]="doctor.doctor_id">{{ doctor.first_name
-                    }}</mat-option>
+                <mat-option *ngFor="let doctor of doctors" [value]="doctor.doctor_id">
+                    {{ doctor.first_name }}
+                </mat-option>
             </mat-select>
         </mat-form-field>
 
         <!-- Patient Selector -->
         <mat-form-field appearance="fill">
             <mat-label>Patient</mat-label>
-            <mat-select formControlName="patient_id">
-                <mat-option *ngFor="let patient of patients" [value]="patient.patient_id">{{ patient.first_name }} {{
-                    patient.last_name }}</mat-option>
+            <mat-select formControlName="patient_id" (selectionChange)="onPatientSelected()">
+                <mat-option *ngFor="let patient of patients" [value]="patient.patient_id">
+                    {{ patient.first_name }} {{ patient.last_name }}
+                </mat-option>
             </mat-select>
         </mat-form-field>
 
-        <!-- Treatment Selector -->
+
+        <!-- Prescribed Treatments Dropdown -->
+        <!-- Prescribed Treatment Selector -->
         <mat-form-field appearance="fill">
-            <mat-label>Treatment</mat-label>
-            <mat-select formControlName="treatment_id">
-                <mat-option *ngFor="let treatment of treatments" [value]="treatment.treatment_id">
-                    {{treatment.treatment_name }}- Cost:{{treatment.cost }}</mat-option>
+            <mat-label>Prescribed Treatment</mat-label>
+            <mat-select formControlName="patient_treatment_id">
+                <mat-option *ngFor="let treatment of selectedPatientTreatments"
+                    [value]="treatment.patient_treatment_id">
+                    {{treatment.treatment_name}}
+                </mat-option>
             </mat-select>
         </mat-form-field>
+
+
         <!-- Status (hidden as it's always "Scheduled" for new appointments) -->
         <input type="hidden" formControlName="appointment_status">
     </form>

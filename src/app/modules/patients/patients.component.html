@@ -3,14 +3,7 @@
     <input matInput (keyup)="applyFilter($event)" placeholder="Search">
 </mat-form-field>
 
-<button mat-raised-button color="accent" (click)="showRegistration = true">Add New Patient</button>
-
-<div *ngIf="showRegistration">
-    <button mat-raised-button color="warn" (click)="showRegistration = false">Cancel</button>
-    <app-patient-registration ></app-patient-registration>
-    
-</div>
-
+<button mat-raised-button color="accent" (click)="openRegistrationDialog()">Add New Patient</button>
 
 <mat-table [dataSource]="dataSource">
     <!-- Define Columns -->
@@ -18,12 +11,12 @@
         <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
         <mat-cell *matCellDef="let patient"> {{patient.first_name}} {{patient.last_name}} </mat-cell>
     </ng-container>
-    
+
     <ng-container matColumnDef="email">
         <mat-header-cell *matHeaderCellDef> Email </mat-header-cell>
         <mat-cell *matCellDef="let patient"> {{patient.email}} </mat-cell>
     </ng-container>
-    
+
     <ng-container matColumnDef="phone">
         <mat-header-cell *matHeaderCellDef> Phone </mat-header-cell>
         <mat-cell *matCellDef="let patient"> {{patient.phone}} </mat-cell>
@@ -34,10 +27,18 @@
         <mat-cell *matCellDef="let patient"> {{patient.nhs_number}} </mat-cell>
     </ng-container>
 
+    <ng-container matColumnDef="treatments">
+        <mat-header-cell *matHeaderCellDef> Treatments Prescribed</mat-header-cell>
+        <mat-cell *matCellDef="let patient"> {{patient.treatments}} </mat-cell>
+    </ng-container>
+    
     <ng-container matColumnDef="actions">
         <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
         <mat-cell *matCellDef="let patient">
-            
+            <!-- Prescribe Treatment -->
+            <button mat-icon-button color="primary" (click)="prescribeTreatment(patient.patient_id)">
+                <mat-icon>local_hospital</mat-icon>
+            </button>
             <button mat-icon-button color="accent" (click)="editPatient(patient.id)">
                 <mat-icon>edit</mat-icon>
             </button>
@@ -50,3 +51,5 @@
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
     <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
 </mat-table>
+
+<router-outlet></router-outlet>
